@@ -28,7 +28,7 @@ namespace Shopping.Test
             memberRepoMock.Setup(m => m.FindById(memberID)).Returns(member);
 
             // Act
-            ShoppingService.Checkout(itemIDs, memberID, promoCode: null, when: DateTime.Now);
+            //ShoppingService.Checkout(itemIDs, memberID, promoCode: null, when: DateTime.Now);
 
             // Assert
             paymentServiceMock.Verify(r => r.Charge(memberID, 0), Times.Once);
@@ -57,7 +57,7 @@ namespace Shopping.Test
             memberRepoMock.Setup(m => m.FindById(memberID)).Returns(member);
 
             // Act
-            ShoppingService.Checkout(itemIDs, memberID, promoCode: null, when: DateTime.Now);
+            //ShoppingService.Checkout(itemIDs, memberID, promoCode: null, when: DateTime.Now);
 
             // Assert
             paymentServiceMock.Verify(r => r.Charge(memberID, 150), Times.Once);
@@ -86,7 +86,7 @@ namespace Shopping.Test
             memberRepoMock.Setup(m => m.FindById(memberId)).Returns(member);
 
             // Act
-            ShoppingService.Checkout(itemIDs, memberId, promoCode: null, when: DateTime.Now);
+            //ShoppingService.Checkout(itemIDs, memberId, promoCode: null, when: DateTime.Now);
 
             // Assert
             var discountToApply = 50;

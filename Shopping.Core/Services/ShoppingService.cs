@@ -1,22 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Shopping.Core.Models;
-using Shopping.Core.Repositories;
 
 namespace Shopping.Core.Services
 {
     public class ShoppingService
     {
-        public static void Checkout(IEnumerable<int> itemIDs, int memberId, string promoCode, DateTime when)
+        public static void Checkout(
+            IEnumerable<int> itemIds, 
+            int memberId,
+            string promoCode,
+            DateTime when,
+            Func<int, Member> findMemberById,
+            Func<IEnumerable<int>, IEnumerable<Item>> findItemsByIds,
+            Action<LogLevel, string> log,
+            Action<int, decimal> chargeMember)
         {
-            var member = MemberRepository.FindById(memberId);
+            var member = findMemberById(memberId);
             if (member == null)
             {
                 throw new MemberNotFoundException(memberId);
             }
 
-            var items = ItemRepository.FindByIDs(itemIDs) ?? new Item[] { };
+            var items = findItemsByIds(itemIds);
 
             // decide birthday discount
             var birthdayDiscountPercentage = Calculate.DiscountForMemberBirthday(when, member.Birthday);
@@ -28,9 +34,9 @@ namespace Shopping.Core.Services
             var totalPayable = Calculate.TotalPayable(birthdayDiscountPercentage, promoDiscountPercentage, items);
 
             // log and persist
-            LoggingService.Log(LogLevel.Info, $"We got member {member.Name} hooked!");
+            log(LogLevel.Info, $"We got member {member.Name} hooked!");
 
-            PaymentService.Charge(memberId, totalPayable);
+            chargeMember(memberId, totalPayable);
         }
     }
 }
