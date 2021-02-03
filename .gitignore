@@ -1,0 +1,7 @@
+Shopping.API/obj/
+Shopping.Core/bin/
+Shopping.Test/bin/
+Shopping.Test/obj/
+Shopping.API/bin/
+Shopping.Core/obj/
+.vs/TestSolution/v16/.suo
