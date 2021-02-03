@@ -27,13 +27,8 @@ namespace Shopping.Test
             var memberRepoMock = new Mock<IMemberRepository>();
             memberRepoMock.Setup(m => m.FindById(memberID)).Returns(member);
 
-            var shoppingService = new ShoppingService(loggingServiceMock.Object,
-                itemRepoMock.Object,
-                paymentServiceMock.Object,
-                memberRepoMock.Object);
-
             // Act
-            shoppingService.Checkout(itemIDs, memberID, promoCode: null, when: DateTime.Now);
+            ShoppingService.Checkout(itemIDs, memberID, promoCode: null, when: DateTime.Now);
 
             // Assert
             paymentServiceMock.Verify(r => r.Charge(memberID, 0), Times.Once);
@@ -61,13 +56,8 @@ namespace Shopping.Test
             var memberRepoMock = new Mock<IMemberRepository>();
             memberRepoMock.Setup(m => m.FindById(memberID)).Returns(member);
 
-            var shoppingService = new ShoppingService(loggingServiceMock.Object,
-                itemRepoMock.Object,
-                paymentServiceMock.Object,
-                memberRepoMock.Object);
-
             // Act
-            shoppingService.Checkout(itemIDs, memberID, promoCode: null, when: DateTime.Now);
+            ShoppingService.Checkout(itemIDs, memberID, promoCode: null, when: DateTime.Now);
 
             // Assert
             paymentServiceMock.Verify(r => r.Charge(memberID, 150), Times.Once);
@@ -95,13 +85,8 @@ namespace Shopping.Test
             var memberRepoMock = new Mock<IMemberRepository>();
             memberRepoMock.Setup(m => m.FindById(memberId)).Returns(member);
 
-            var shoppingService = new ShoppingService(loggingServiceMock.Object,
-                itemRepoMock.Object,
-                paymentServiceMock.Object,
-                memberRepoMock.Object);
-
             // Act
-            shoppingService.Checkout(itemIDs, memberId, promoCode: null, when: DateTime.Now);
+            ShoppingService.Checkout(itemIDs, memberId, promoCode: null, when: DateTime.Now);
 
             // Assert
             var discountToApply = 50;

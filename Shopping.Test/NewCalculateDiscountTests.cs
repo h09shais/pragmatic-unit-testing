@@ -39,7 +39,7 @@ namespace Shopping.Test
         [TestCaseSource(nameof(CalculatePromoDiscountTestCaseSource))]
         public void CalculatePromoDiscountTests(string promoCode, DateTime when, decimal expected)
         {
-            var calculatePromoDiscount = ShoppingService.CalculateDiscountForPromoCode(promoCode, when);
+            var calculatePromoDiscount = Calculate.DiscountForPromoCode(promoCode, when);
             Assert.AreEqual(expected, calculatePromoDiscount);
         }
 
@@ -63,7 +63,7 @@ namespace Shopping.Test
         [TestCaseSource(nameof(CalculateDiscountForMemberBirthdayTestCaseSource))]
         public void CalculateDiscountForMemberBirthdayTests(DateTime birthday, DateTime when, decimal expected)
         {
-            var calculatePromoDiscount = ShoppingService.CalculateDiscountForMemberBirthday(when, birthday);
+            var calculatePromoDiscount = Calculate.DiscountForMemberBirthday(when, birthday);
             Assert.AreEqual(expected, calculatePromoDiscount);
         }
 
@@ -115,7 +115,7 @@ namespace Shopping.Test
 
                 return item.Price;
             });
-            var calculatePromoDiscount = ShoppingService.CalculateTotalPayable(birthdayDiscountPercentage, promoDiscountPercentage, items);
+            var calculatePromoDiscount = Calculate.TotalPayable(birthdayDiscountPercentage, promoDiscountPercentage, items);
             Assert.AreEqual(expected, calculatePromoDiscount);
         }   
     }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Shopping.Core.Models;
 
 namespace Shopping.Core.Services
 {
