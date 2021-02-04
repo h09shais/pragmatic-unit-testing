@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Shopping.Core.Models
 {
     [Serializable]
-    internal class MemberNotFoundException : Exception
+    public class MemberNotFoundException : Exception
     {
         private int _memberId;
 

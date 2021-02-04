@@ -7,10 +7,9 @@ namespace Shopping.Core.Services
 {
     public class Calculate
     {
-        public static decimal TotalPayable(decimal birthdayDiscountPercentage, decimal promoDiscountPercentage,
+        public static decimal TotalPayable(decimal discountToApply,
             IEnumerable<Item> items)
         {
-            var discountToApply = Math.Max(birthdayDiscountPercentage, promoDiscountPercentage);
             var totalPayable = items.Sum(item =>
             {
                 if (item.IsDiscountable)
@@ -24,10 +23,10 @@ namespace Shopping.Core.Services
             return totalPayable;
         }
 
-        public static decimal DiscountForMemberBirthday(DateTime when, DateTime birthday)
+        public static decimal DiscountForMemberBirthday(DateTime when, Member member)
         {
             var birthdayDiscountPercentage = 0;
-            var isBirthday = birthday.Month == when.Month && birthday.Day == when.Day;
+            var isBirthday = member.Birthday.Month == when.Month && member.Birthday.Day == when.Day;
             if (isBirthday)
             {
                 birthdayDiscountPercentage = 50;

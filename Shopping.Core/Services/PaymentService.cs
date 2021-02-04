@@ -1,4 +1,6 @@
-﻿namespace Shopping.Core.Services
+﻿using System;
+
+namespace Shopping.Core.Services
 {
     public class PaymentService
     {

@@ -9,7 +9,7 @@ namespace Shopping.Core.Services
         public static void Checkout(
             string promoCode,
             DateTime when,
-            Func<DateTime> findMember,
+            Func<Member> findMember,
             Func<IEnumerable<Item>> findItems,
             Action<decimal> chargeMember)
         {
@@ -19,11 +19,10 @@ namespace Shopping.Core.Services
             // decide promo discount
             var promoDiscountPercentage = Calculate.DiscountForPromoCode(promoCode, when);
 
-            // decide applicable discount and create purchases
-            var totalPayable = Calculate.TotalPayable(birthdayDiscountPercentage, promoDiscountPercentage, findItems());
+            var discountToApply = Math.Max(birthdayDiscountPercentage, promoDiscountPercentage);
 
-            // log and persist
-            //log(LogLevel.Info, $"We got member {member.Name} hooked!");
+            // decide applicable discount and create purchases
+            var totalPayable = Calculate.TotalPayable(discountToApply, findItems());
 
             chargeMember(totalPayable);
         }

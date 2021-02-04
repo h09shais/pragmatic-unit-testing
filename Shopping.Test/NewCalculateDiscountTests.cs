@@ -63,9 +63,9 @@ namespace Shopping.Test
 
         [Theory]
         [TestCaseSource(nameof(CalculateDiscountForMemberBirthdayTestCaseSource))]
-        public void CalculateDiscountForMemberBirthdayTests(DateTime birthday, DateTime when, decimal expected)
+        public void CalculateDiscountForMemberBirthdayTests(Member member, DateTime when, decimal expected)
         {
-            var calculatePromoDiscount = Calculate.DiscountForMemberBirthday(when, birthday);
+            var calculatePromoDiscount = Calculate.DiscountForMemberBirthday(when, member);
             Assert.AreEqual(expected, calculatePromoDiscount);
         }
 
@@ -105,76 +105,10 @@ namespace Shopping.Test
 
         [Theory]
         [TestCaseSource(nameof(CalculateTotalPayableTestCaseSource))]
-        public void CalculateTotalPayableTests(Item[] items, decimal birthdayDiscountPercentage, decimal promoDiscountPercentage, decimal expected)
+        public void CalculateTotalPayableTests(Item[] items, decimal discountToApply, decimal expected)
         {
-            var discountToApply = Math.Max(birthdayDiscountPercentage, promoDiscountPercentage);
-            var totalPayable = items.Sum(item =>
-            {
-                if (item.IsDiscountable)
-                {
-                    return item.Price * (100 - discountToApply) / 100;
-                }
-
-                return item.Price;
-            });
-            var calculatePromoDiscount = Calculate.TotalPayable(birthdayDiscountPercentage, promoDiscountPercentage, items);
+            var calculatePromoDiscount = Calculate.TotalPayable(discountToApply, items);
             Assert.AreEqual(expected, calculatePromoDiscount);
-        }
-
-        public static object[][] TotalChargedTestCases = {
-            // buying nothing
-            new object[]
-            {
-                new Item[] {},
-                new Member
-                {
-                    Birthday = new DateTime(1983, 4, 2)
-                },
-                null,
-                new DateTime(2019, 4, 1),
-                0
-            },
-            // having birthday!
-            new object[]
-            {
-                new[] { new Item
-                {
-                    Price = 100, 
-                    IsDiscountable = true
-                }},
-                new Member
-                {
-                    Birthday = new DateTime(1983, 4, 2)
-                },
-                null,
-                new DateTime(2019, 4, 2),
-                50
-            },
-        };
-
-        [Theory]
-        [TestCaseSource(nameof(TotalChargedTestCases))]
-        public void Member_is_charged_per_discounts(
-            IEnumerable<int> itemIds, 
-            IEnumerable<Item> items,
-            int memberId, 
-            Member member, 
-            string promoCode, 
-            DateTime checkoutTime,
-            decimal expectedCharged)
-        {
-            var chargeMemberMock = new Mock<Action<int, decimal>>();
-            ShoppingService.Checkout(
-                itemIds, 
-                memberId, 
-                promoCode, 
-                checkoutTime, 
-                id => member,
-                ids => items,
-                (level, msg) => { },
-                chargeMemberMock.Object);
-
-            chargeMemberMock.Verify(item => item(memberId, expectedCharged), Times.Once);
         }
     }
 }

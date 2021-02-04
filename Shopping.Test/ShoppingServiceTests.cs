@@ -1,105 +1,72 @@
 ﻿using System;
-using System.Linq;
-using Moq;
 using NUnit.Framework;
 using Shopping.Core.Models;
-using Shopping.Core.Repositories;
 using Shopping.Core.Services;
 
 namespace Shopping.Test
 {
     public class ShoppingServiceTests
     {
+        public static object[][] TotalChargedTestCases = {
+            // buying nothing
+            new object[]
+            {
+                new Item[] {},
+                new Member { Birthday = new DateTime(1983, 4, 2) },
+                null,
+                new DateTime(2019, 4, 1),
+                0m
+            },
+            // having birthday!
+            new object[]
+            {
+                new[] { new Item { Price = 100, IsDiscountable = true }},
+                new Member { Birthday = new DateTime(1983, 4, 2) },
+                null,
+                new DateTime(2019, 4, 2),
+                50m
+            },
+        };
+
+        public static object[][] CalculateTotalPayableTestCases = {
+            // no item at all
+            new object[]
+            {
+                new Item[]{},
+                20m,
+                0m
+            },
+            // single discountable
+            new object[]
+            {
+                new Item[]{ new Item { IsDiscountable = true, Price = 100 } },
+                20m,
+                80m
+            },
+            // add more test cases?
+        };
+
+        [Theory]
+        [TestCaseSource(nameof(CalculateTotalPayableTestCases))]
+        public void Calculate_total_payable(Item[] items, decimal discountToApply, decimal expectedTotal)
+        {
+            var actual = Calculate.TotalPayable(discountToApply, items);
+            Assert.AreEqual(expectedTotal, actual);
+        }
+
         [Test]
         public void If_member_is_buying_nothing_Then_should_not_be_charged()
         {
-            // Arrange
-            var itemIDs = Enumerable.Empty<int>();
-            var memberID = 12345;
-            var member = new Member { Birthday = DateTime.Now };
-
-            var loggingServiceMock = new Mock<ILoggingService>();
-            var paymentServiceMock = new Mock<IPaymentService>();
-
-            var itemRepoMock = new Mock<IItemRepository>();
-            itemRepoMock.Setup(i => i.FindByIDs(itemIDs)).Returns(new Item[] { });
-
-            var memberRepoMock = new Mock<IMemberRepository>();
-            memberRepoMock.Setup(m => m.FindById(memberID)).Returns(member);
-
-            // Act
-            //ShoppingService.Checkout(itemIDs, memberID, promoCode: null, when: DateTime.Now);
-
-            // Assert
-            paymentServiceMock.Verify(r => r.Charge(memberID, 0), Times.Once);
         }
 
         [Test]
         public void If_item_is_not_discountable_Although_member_is_having_birthday_Then_should_be_charged_fully()
         {
-            // Arrange
-            var itemIDs = new int[] { 11, 22 };
-            var items = new Item[]
-            {
-                new Item { Name = "foo", Price = 50 },
-                new Item { Name = "bar", Price = 100 },
-            };
-            var memberID = 12345;
-            var member = new Member { Birthday = DateTime.Now };
-
-            var loggingServiceMock = new Mock<ILoggingService>();
-            var paymentServiceMock = new Mock<IPaymentService>();
-
-            var itemRepoMock = new Mock<IItemRepository>();
-            itemRepoMock.Setup(i => i.FindByIDs(itemIDs)).Returns(items);
-
-            var memberRepoMock = new Mock<IMemberRepository>();
-            memberRepoMock.Setup(m => m.FindById(memberID)).Returns(member);
-
-            // Act
-            //ShoppingService.Checkout(itemIDs, memberID, promoCode: null, when: DateTime.Now);
-
-            // Assert
-            paymentServiceMock.Verify(r => r.Charge(memberID, 150), Times.Once);
         }
 
         [Test]
         public void If_item_is_discountable_And_member_is_having_birthday_Then_discount_by_50_percent()
         {
-            // Arrange
-            var itemIDs = new int[] { 11, 22 };
-            var items = new Item[]
-            {
-                new Item { Name = "foo", Price = 50 },
-                new Item { Name = "bar", Price = 100 },
-            };
-            var memberId = 12345;
-            var member = new Member { Birthday = DateTime.Now };
-
-            var loggingServiceMock = new Mock<ILoggingService>();
-            var paymentServiceMock = new Mock<IPaymentService>();
-
-            var itemRepoMock = new Mock<IItemRepository>();
-            itemRepoMock.Setup(i => i.FindByIDs(itemIDs)).Returns(items);
-
-            var memberRepoMock = new Mock<IMemberRepository>();
-            memberRepoMock.Setup(m => m.FindById(memberId)).Returns(member);
-
-            // Act
-            //ShoppingService.Checkout(itemIDs, memberId, promoCode: null, when: DateTime.Now);
-
-            // Assert
-            var discountToApply = 50;
-            var totalPayable = items.Sum(item =>
-            {
-                if (item.IsDiscountable)
-                {
-                    return item.Price * (100 - discountToApply) / 100;
-                }
-                return item.Price;
-            });
-
-            paymentServiceMock.Verify(r => r.Charge(memberId, totalPayable), Times.Once);
         }
 
         [Test]
