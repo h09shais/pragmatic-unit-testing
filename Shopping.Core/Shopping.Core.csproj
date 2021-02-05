@@ -4,4 +4,12 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Repositories\IItemRepository.cs" />
+    <Compile Remove="Repositories\IMemberRepository.cs" />
+    <Compile Remove="Services\ILoggingService.cs" />
+    <Compile Remove="Services\IPaymentService.cs" />
+    <Compile Remove="Services\IShoppingService.cs" />
+  </ItemGroup>
+
 </Project>

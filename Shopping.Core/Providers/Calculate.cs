@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Shopping.Core.Models;
 
-namespace Shopping.Core.Services
+namespace Shopping.Core.Providers
 {
     public class Calculate
     {

@@ -4,6 +4,7 @@ using System.Linq;
 using Moq;
 using NUnit.Framework;
 using Shopping.Core.Models;
+using Shopping.Core.Providers;
 using Shopping.Core.Services;
 
 namespace Shopping.Test

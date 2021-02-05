@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Shopping.Core.Models;
+using Shopping.Core.Providers;
 
 namespace Shopping.Core.Services
 {

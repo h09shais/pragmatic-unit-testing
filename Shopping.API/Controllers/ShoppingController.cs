@@ -15,20 +15,20 @@ namespace Shopping.API.Controllers
                 request.PromoCode,
                 DateTime.Now,
                 () => {
-                    var member = MemberRepository.FindById(ContextualMemberID);
+                    var member = MemberRepository.FindById(ContextualMemberId);
                     if (member == null)
                     {
-                        throw new MemberNotFoundException(ContextualMemberID);
+                        throw new NotFoundException(ContextualMemberId);
                     }
                     return member;
                 },
                 () => ItemRepository.FindByIds(request.ItemIds) ?? new Item[] { },
                 total => {
-                    LoggingService.Log(LogLevel.Info, $"Member {ContextualMemberID} charged {total}");
-                    PaymentService.Charge(ContextualMemberID, total);
+                    LoggingService.Log(LogLevel.Info, $"Member {ContextualMemberId} charged {total}");
+                    PaymentService.Charge(ContextualMemberId, total);
                 });
         }
 
-        private int ContextualMemberID = 20190620;
+        private int ContextualMemberId = 20190620;
     }
 }
