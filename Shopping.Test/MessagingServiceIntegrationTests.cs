@@ -83,11 +83,11 @@ namespace Shopping.Test
             
             if (expectedSend)
             {
-                sendMessageMock.Verify(r => r(sender, receiver, message), Times.Once, failMessage: scenario);
+                sendMessageMock.Verify(item => item(sender, receiver, message), Times.Once, failMessage: scenario);
             }
             else
             {
-                sendMessageMock.Verify(r => r(sender, receiver, message), Times.Never, failMessage: scenario);
+                sendMessageMock.Verify(item => item(sender, receiver, message), Times.Never, failMessage: scenario);
             }
         }
     }

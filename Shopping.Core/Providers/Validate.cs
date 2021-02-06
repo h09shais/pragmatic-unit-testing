@@ -7,19 +7,22 @@ namespace Shopping.Core.Providers
 {
     public class Validate
     {
-        public static bool Sender(Sender sender)
+        public static bool SenderIsNotBlocked(Sender sender)
         {
-            return BlockListRepository.Senders().Any(blockedSender => sender.Name == blockedSender.Name);
+            var senders = BlockListRepository.Senders();
+            return senders.Any(blockedSender => sender.Name == blockedSender.Name);
         }
 
-        public static bool Receiver(Receiver receiver)
+        public static bool ReceiverIsNotBlocked(Receiver receiver)
         {
-            return BlockListRepository.Receivers().Any(blockedReceiver => receiver.Name == blockedReceiver.Name);
+            var receivers = BlockListRepository.Receivers();
+            return receivers.Any(blockedReceiver => receiver.Name == blockedReceiver.Name);
         }
 
-        public static bool Message(string message)
+        public static bool MessageIsNotBlocked(string message)
         {
-            return BlockListRepository.Words().Any(word => message.Contains(word, StringComparison.InvariantCultureIgnoreCase));
+            var words = BlockListRepository.Words();
+            return words.Any(word => message.Contains(word, StringComparison.InvariantCultureIgnoreCase));
         }
     }
 }
