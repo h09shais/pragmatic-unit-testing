@@ -3,9 +3,9 @@ using Shopping.Core.Models;
 
 namespace Shopping.Core.Repositories
 {
-    public class SenderRepository
+    public class UserRepository
     {
-        public Sender FindById(int senderId)
+        public User FindById(int senderId)
         {
             throw new NotImplementedException();
         }

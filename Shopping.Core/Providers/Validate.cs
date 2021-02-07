@@ -7,11 +7,11 @@ namespace Shopping.Core.Providers
 {
     public class Validate
     {
-        public static bool SenderIsNotBlocked(Sender sender, IEnumerable<Sender> blockList)
+        public static bool UserIsNotBlocked(User user, IEnumerable<User> blockList)
         {
-            if (blockList.Any(blockedSender => sender.Name == blockedSender.Name))
+            if (blockList.Any(blockedUser => user.Id == blockedUser.Id))
             {
-                throw new InternalException("Sender is blocked!");
+                throw new InternalException("User is blocked!");
             }
 
             return true;
@@ -19,7 +19,7 @@ namespace Shopping.Core.Providers
 
         public static bool ReceiverIsNotBlocked(Receiver receiver, IEnumerable<Receiver> blockList)
         {
-            if (blockList.Any(blockedReceiver => receiver.Name == blockedReceiver.Name))
+            if (blockList.Any(blockedReceiver => receiver.Id == blockedReceiver.Id))
             {
                 throw new InternalException("Receiver is blocked!");
             }

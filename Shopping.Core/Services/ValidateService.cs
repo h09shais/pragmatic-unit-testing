@@ -8,8 +8,8 @@ namespace Shopping.Core.Services
     public class ValidateService
     {
         public static bool IsNotBlocked(
-            Sender sender, 
-            IEnumerable<Sender> senders,
+            User sender, 
+            IEnumerable<User> senders,
             Receiver receiver, 
             IEnumerable<Receiver> receivers,
             string message, 
@@ -21,7 +21,7 @@ namespace Shopping.Core.Services
                    MessageIsNotBlocked(message, words);
         }
 
-        public static bool SenderIsNotBlocked(Sender sender, IEnumerable<Sender> senders)
+        public static bool SenderIsNotBlocked(User sender, IEnumerable<User> senders)
         {
             return senders.Any(blockedSender => sender.Name == blockedSender.Name);
         }

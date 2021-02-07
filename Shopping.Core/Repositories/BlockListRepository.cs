@@ -5,7 +5,7 @@ namespace Shopping.Core.Repositories
 {
     public class BlockListRepository
     {
-        public virtual IEnumerable<Sender> Senders()
+        public virtual IEnumerable<User> Users()
         {
             throw new System.NotImplementedException();
         }

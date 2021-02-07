@@ -8,20 +8,20 @@ namespace Shopping.API.Controllers
 {
     public class MessageController : Controller
     {
-        public void Send(SendRequest request)
+        public void Send(MessageRequest request)
         {
             var blockListRepository = new BlockListRepository();
-            var senderRepository = new SenderRepository();
+            var userRepository = new UserRepository();
             var receiverRepository = new ReceiverRepository();
 
             MessageService.Send(
                 request,
                 blockListRepository,
-                senderRepository.FindById,
+                userRepository.FindById,
                 receiverRepository.FindById,
-                (sender, receiver, message) => {
-                    LoggingService.Log(LogLevel.Info, $"Sender {sender.Id} send message to Receiver {receiver.Id}");
-                    NotificationService.Notify(sender, receiver, message);
+                (user, receiver, message) => {
+                    LoggingService.Log(LogLevel.Info, $"User {user.Id} send message to Receiver {receiver.Id}");
+                    NotificationService.Notify(user, receiver, message);
                 });
         }
     }

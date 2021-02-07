@@ -11,25 +11,24 @@ namespace Shopping.Test
 {
     public class MessagingServiceIntegrationTests
     {
-        public static object[][] MessagingTestCases = {
+        public static object[][] MessageContainsBlockWord = {
             new object[]
             {
-               new SendRequest
-               {
-                   Message =  "basic send operation",
-                   ReceiverId = 12,
-                   SenderId = 13
-               }
-               , 
-                new Sender { Id = 13, Name = "sender"},
-                new Receiver { Id = 12, Name = "receiver" },
-                new List<Sender>
+                new MessageRequest
                 {
-                    new Sender
+                    Message =  "basic send operation",
+                    ReceiverId = 12,
+                    UserId = 13
+                },
+                new User { Id = 13, Name = "user"},
+                new Receiver { Id = 12, Name = "receiver" },
+                new List<User>
+                {
+                    new User
                     {
                         Id = 1
                     },
-                    new Sender
+                    new User
                     {
                         Id = 2
                     },
@@ -50,17 +49,17 @@ namespace Shopping.Test
         };
 
         [Theory]
-        [TestCaseSource(nameof(MessagingTestCases))]
-        public void sending_messages(
-            SendRequest request, 
-            Sender sender, 
+        [TestCaseSource(nameof(MessageContainsBlockWord))]
+        public void If_message_contains_block_word_Then_sending_messages_should_throw_exception(
+            MessageRequest request, 
+            User user, 
             Receiver receiver,
-            List<Sender> senderBlockList,
+            List<User> userBlockList,
             List<Receiver> receiverBlockList,
             List<string> wordBlockList)
         {
             var repository = new Mock<BlockListRepository>();
-            repository.Setup(src => src.Senders()).Returns(senderBlockList);
+            repository.Setup(src => src.Users()).Returns(userBlockList);
             repository.Setup(src => src.Receivers()).Returns(receiverBlockList);
             repository.Setup(src => src.Words()).Returns(wordBlockList);
 
@@ -69,10 +68,75 @@ namespace Shopping.Test
                 MessageService.Send(
                     request,
                     repository.Object,
-                    _ => sender,
+                    _ => user,
                     _ => receiver,
-                    ((sender1, receiver1, message) => { return;})
+                    ((from, to, message) => { return;})
                 ));
+        }
+
+        public static object[][] UserNotBlockedAndReceiverNotBlockedAndMessageContainsNoBlockWord = {
+            new object[]
+            {
+                new MessageRequest
+                {
+                    Message =  "basic send operation",
+                    ReceiverId = 12,
+                    UserId = 13
+                },
+                new User { Id = 13, Name = "user"},
+                new Receiver { Id = 12, Name = "receiver" },
+                new List<User>
+                {
+                    new User
+                    {
+                        Id = 1
+                    },
+                    new User
+                    {
+                        Id = 2
+                    },
+                },
+                new List<Receiver>
+                {
+                    new Receiver
+                    {
+                        Id = 1
+                    },
+                    new Receiver
+                    {
+                        Id = 2
+                    },
+                },
+                new List<string>{"good", "test"}
+            }
+        };
+
+        [Theory]
+        [TestCaseSource(nameof(UserNotBlockedAndReceiverNotBlockedAndMessageContainsNoBlockWord))]
+        public void If_user_not_blocked_And_receiver_not_blocked_And_message_contains_no_block_word_Then_sending_messages_should_send(
+            MessageRequest request,
+            User user,
+            Receiver receiver,
+            List<User> userBlockList,
+            List<Receiver> receiverBlockList,
+            List<string> wordBlockList)
+        {
+            var repository = new Mock<BlockListRepository>();
+            repository.Setup(src => src.Users()).Returns(userBlockList);
+            repository.Setup(src => src.Receivers()).Returns(receiverBlockList);
+            repository.Setup(src => src.Words()).Returns(wordBlockList);
+
+            var saveAndNotifyMock = new Mock<Action<User, Receiver, string>>();
+
+            MessageService.Send(
+                request,
+                repository.Object,
+                _ => user,
+                _ => receiver,
+                saveAndNotifyMock.Object
+            );
+
+            saveAndNotifyMock.Verify(item => item(user, receiver, request.Message), Times.Once);
         }
     }
 }

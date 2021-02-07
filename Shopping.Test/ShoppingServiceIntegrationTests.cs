@@ -44,11 +44,11 @@ namespace Shopping.Test
 
             // Act
             ShoppingService.Checkout(
-                promoCode: promoCode,
-                when: checkoutTime,
-                findMember: () => member,
-                findItems: () => items,
-                chargeMember: chargeMemberMock.Object);
+                promoCode,
+                checkoutTime,
+                () => member,
+                () => items,
+                chargeMemberMock.Object);
 
             // Assert
             chargeMemberMock.Verify(item => item(expectedTotalCharged), Times.Once);

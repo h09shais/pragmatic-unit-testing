@@ -9,23 +9,23 @@ namespace Shopping.Core.Services
     public class MessageService
     {
         public static void Send(
-            SendRequest request, 
+            MessageRequest request, 
             BlockListRepository blockListRepository, 
-            Func<int, Sender> findSender, 
+            Func<int, User> findUser, 
             Func<int, Receiver> findReceiver, 
-            Action<Sender, Receiver, string> saveAndNotify)
+            Action<User, Receiver, string> saveAndNotify)
         {
-            var sender = findSender(request.SenderId);
-            var senderIsNotBlocked = Validate.SenderIsNotBlocked(sender, blockListRepository.Senders());
+            var user = findUser(request.UserId);
+            var userIsNotBlocked = Validate.UserIsNotBlocked(user, blockListRepository.Users());
 
             var receiver = findReceiver(request.ReceiverId);
             var receiverIsNotBlocked = Validate.ReceiverIsNotBlocked(receiver, blockListRepository.Receivers());
 
             var messageIsNotBlocked = Validate.MessageIsNotBlocked(request.Message, blockListRepository.Words());
 
-            if (senderIsNotBlocked && receiverIsNotBlocked && messageIsNotBlocked)
+            if (userIsNotBlocked && receiverIsNotBlocked && messageIsNotBlocked)
             {
-                saveAndNotify(sender, receiver, request.Message);
+                saveAndNotify(user, receiver, request.Message);
             }
         }
     }
