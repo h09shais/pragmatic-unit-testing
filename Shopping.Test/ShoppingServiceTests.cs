@@ -55,6 +55,7 @@ namespace Shopping.Test
             Assert.AreEqual(expectedTotal, actual);
         }
 
+        /*
         [Test]
         public void If_member_is_buying_nothing_Then_should_not_be_charged()
         {
@@ -80,7 +81,7 @@ namespace Shopping.Test
         public void If_item_is_discountable_And_member_is_not_having_birthday_And_promo_code_is_AM_and_time_is_AM_Then_discount_by_8_percent()
         {
             // try write this test
-        }
+        }*/
     }
 
 }

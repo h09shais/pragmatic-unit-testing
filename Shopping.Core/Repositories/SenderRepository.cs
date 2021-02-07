@@ -5,7 +5,7 @@ namespace Shopping.Core.Repositories
 {
     public class SenderRepository
     {
-        public static Sender FindById(int senderId)
+        public Sender FindById(int senderId)
         {
             throw new NotImplementedException();
         }

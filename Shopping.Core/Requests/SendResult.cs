@@ -1,6 +1,6 @@
-﻿namespace Shopping.API.Models
+﻿namespace Shopping.Core.Requests
 {
-    public class SendResult
+    public class SendRequest
     {
         public int SenderId { get; set; }
         public int ReceiverId { get; set; }

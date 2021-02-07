@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using Shopping.API.Models;
 using Shopping.Core.Models;
 using Shopping.Core.Repositories;
+using Shopping.Core.Requests;
 using Shopping.Core.Services;
 
 namespace Shopping.API.Controllers
@@ -18,7 +18,7 @@ namespace Shopping.API.Controllers
                     var member = MemberRepository.FindById(ContextualMemberId);
                     if (member == null)
                     {
-                        throw new NotFoundException(ContextualMemberId);
+                        throw new InternalException(ContextualMemberId);
                     }
                     return member;
                 },

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Shopping.API.Models
+namespace Shopping.Core.Requests
 {
     public class BuyRequest
     {

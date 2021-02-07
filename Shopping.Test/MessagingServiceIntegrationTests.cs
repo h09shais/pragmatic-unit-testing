@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
 using Shopping.Core.Models;
+using Shopping.Core.Repositories;
+using Shopping.Core.Requests;
 using Shopping.Core.Services;
 
 namespace Shopping.Test
@@ -12,83 +14,65 @@ namespace Shopping.Test
         public static object[][] MessagingTestCases = {
             new object[]
             {
-                "basic send operation",
-                new Sender { Name = "sender1"},
-                new Receiver { Name = "receiver1" },
-                "Hello",
-                new Sender[] {},
-                new string[] {},
-                true
-            },
-            new object[]
-            {
-                "blocked sender",
-                new Sender { Name = "sender2"},
-                new Receiver { Name = "receiver2" },
-                "Hello",
-                new[] { new Sender { Name = "sender2" } },
-                new string[] {},
-                false
-            },
-            new object[]
-            {
-                "blocked sender on receiver",
-                new Sender { Name = "sender3"},
-                new Receiver { Name = "Receiver3" },
-                "Hello",
-                new[] { new Sender { Name = "sender3" } },
-                new string[] {},
-                false
-            },
-            new object[]
-            {
-                "blocked word",
-                new Sender { Name = "sender4"},
-                new Receiver { Name = "receiver4" },
-                "Hello",
-                new Sender[] {},
-                new[] { "Hello" },
-                false
-            },
-            new object[]
-            {
-                "blocked word with lower-case",
-                new Sender { Name = "sender5" },
-                new Receiver { Name = "receiver5" },
-                "Hello",
-                new Sender[] {},
-                new[] { "hello" },
-                false
-            },
+               new SendRequest
+               {
+                   Message =  "basic send operation",
+                   ReceiverId = 12,
+                   SenderId = 13
+               }
+               , 
+                new Sender { Id = 13, Name = "sender"},
+                new Receiver { Id = 12, Name = "receiver" },
+                new List<Sender>
+                {
+                    new Sender
+                    {
+                        Id = 1
+                    },
+                    new Sender
+                    {
+                        Id = 2
+                    },
+                },
+                new List<Receiver>
+                {
+                    new Receiver
+                    {
+                        Id = 1
+                    },
+                    new Receiver
+                    {
+                        Id = 2
+                    },
+                },
+                new List<string>{"basic", "test"}
+            }
         };
 
         [Theory]
         [TestCaseSource(nameof(MessagingTestCases))]
         public void sending_messages(
-           string scenario,
-           Sender sender,
-           Receiver receiver,
-           string message,
-           IEnumerable<Sender> senderBlockList,
-           IEnumerable<string> wordBlockList,
-           bool expectedSend)
+            SendRequest request, 
+            Sender sender, 
+            Receiver receiver,
+            List<Sender> senderBlockList,
+            List<Receiver> receiverBlockList,
+            List<string> wordBlockList)
         {
-            var sendMessageMock = new Mock<Action<Sender, Receiver, string>>();
+            var repository = new Mock<BlockListRepository>();
+            repository.Setup(src => src.Senders()).Returns(senderBlockList);
+            repository.Setup(src => src.Receivers()).Returns(receiverBlockList);
+            repository.Setup(src => src.Words()).Returns(wordBlockList);
 
-            MessageService.Send(
-                () => sender,
-                () => receiver,
-                message,
-                sendMessageMock.Object);
-            
-            if (expectedSend)
-            {
-                sendMessageMock.Verify(item => item(sender, receiver, message), Times.Once, failMessage: scenario);
-            }
-            else
-            {
-                sendMessageMock.Verify(item => item(sender, receiver, message), Times.Never, failMessage: scenario);
-            }
+
+            Assert.Throws<InternalException>(() =>
+                MessageService.Send(
+                    request,
+                    repository.Object,
+                    _ => sender,
+                    _ => receiver,
+                    ((sender1, receiver1, message) => { return;})
+                ));
         }
     }
 }

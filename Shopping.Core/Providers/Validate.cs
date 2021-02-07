@@ -1,28 +1,41 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Shopping.Core.Models;
-using Shopping.Core.Repositories;
 
 namespace Shopping.Core.Providers
 {
     public class Validate
     {
-        public static bool SenderIsNotBlocked(Sender sender)
+        public static bool SenderIsNotBlocked(Sender sender, IEnumerable<Sender> blockList)
         {
-            var senders = BlockListRepository.Senders();
-            return senders.Any(blockedSender => sender.Name == blockedSender.Name);
+            if (blockList.Any(blockedSender => sender.Name == blockedSender.Name))
+            {
+                throw new InternalException("Sender is blocked!");
+            }
+
+            return true;
         }
 
-        public static bool ReceiverIsNotBlocked(Receiver receiver)
+        public static bool ReceiverIsNotBlocked(Receiver receiver, IEnumerable<Receiver> blockList)
         {
-            var receivers = BlockListRepository.Receivers();
-            return receivers.Any(blockedReceiver => receiver.Name == blockedReceiver.Name);
+            if (blockList.Any(blockedReceiver => receiver.Name == blockedReceiver.Name))
+            {
+                throw new InternalException("Receiver is blocked!");
+            }
+
+            return true;
         }
 
-        public static bool MessageIsNotBlocked(string message)
+        public static bool MessageIsNotBlocked(string message, IEnumerable<string> blockList)
         {
-            var words = BlockListRepository.Words();
-            return words.Any(word => message.Contains(word, StringComparison.InvariantCultureIgnoreCase));
+            if (blockList.Any(blockedWords =>
+                message.Contains(blockedWords, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                throw new InternalException("Message is blocked!");
+            }
+
+            return true;
         }
     }
 }

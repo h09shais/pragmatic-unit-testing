@@ -5,17 +5,17 @@ namespace Shopping.Core.Repositories
 {
     public class BlockListRepository
     {
-        public static IEnumerable<Sender> Senders()
+        public virtual IEnumerable<Sender> Senders()
         {
             throw new System.NotImplementedException();
         }
 
-        public static IEnumerable<Receiver> Receivers()
+        public virtual IEnumerable<Receiver> Receivers()
         {
             throw new System.NotImplementedException();
         }
 
-        public static IEnumerable<string> Words()
+        public virtual IEnumerable<string> Words()
         {
             throw new System.NotImplementedException();
         }

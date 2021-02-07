@@ -1,34 +1,31 @@
 ﻿using System;
 using Shopping.Core.Models;
 using Shopping.Core.Providers;
+using Shopping.Core.Repositories;
+using Shopping.Core.Requests;
 
 namespace Shopping.Core.Services
 {
     public class MessageService
     {
         public static void Send(
-            Lazy<Sender> findSender, 
-            Lazy<Receiver> findReceiver, 
-            string message,
+            SendRequest request, 
+            BlockListRepository blockListRepository, 
+            Func<int, Sender> findSender, 
+            Func<int, Receiver> findReceiver, 
             Action<Sender, Receiver, string> saveAndNotify)
         {
-            /*
-             * There can be alternatives to the validSender/Receiver pattern,
-             * one of them is letting the validators throw exceptions directly
-             * and return void so the Send method can carry on without a care.
-             */
-            
-            var sender = findSender.Value;
-            var validSender = Validate.SenderIsNotBlocked(sender);
+            var sender = findSender(request.SenderId);
+            var senderIsNotBlocked = Validate.SenderIsNotBlocked(sender, blockListRepository.Senders());
 
-            var validMessage = Validate.MessageIsNotBlocked(message);
+            var receiver = findReceiver(request.ReceiverId);
+            var receiverIsNotBlocked = Validate.ReceiverIsNotBlocked(receiver, blockListRepository.Receivers());
 
-            var receiver = findReceiver.Value;
-            var validReceiver = Validate.ReceiverIsNotBlocked(receiver);
+            var messageIsNotBlocked = Validate.MessageIsNotBlocked(request.Message, blockListRepository.Words());
 
-            if (validSender && validReceiver && validMessage)
+            if (senderIsNotBlocked && receiverIsNotBlocked && messageIsNotBlocked)
             {
-                saveAndNotify(sender, receiver, message);
+                saveAndNotify(sender, receiver, request.Message);
             }
         }
     }
