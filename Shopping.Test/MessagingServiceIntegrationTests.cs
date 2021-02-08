@@ -58,16 +58,17 @@ namespace Shopping.Test
             List<Receiver> receiverBlockList,
             List<string> wordBlockList)
         {
-            var repository = new Mock<BlockListRepository>();
-            repository.Setup(src => src.Users()).Returns(userBlockList);
-            repository.Setup(src => src.Receivers()).Returns(receiverBlockList);
-            repository.Setup(src => src.Words()).Returns(wordBlockList);
-
+            var repository = new BlockListRepository
+            {
+                Users = () => userBlockList,
+                Receivers = () => receiverBlockList,
+                Words = () => wordBlockList
+            };
 
             Assert.Throws<InternalException>(() =>
                 MessageService.Send(
                     request,
-                    repository.Object,
+                    repository,
                     _ => user,
                     _ => receiver,
                     ((from, to, message) => { return;})
@@ -121,16 +122,17 @@ namespace Shopping.Test
             List<Receiver> receiverBlockList,
             List<string> wordBlockList)
         {
-            var repository = new Mock<BlockListRepository>();
-            repository.Setup(src => src.Users()).Returns(userBlockList);
-            repository.Setup(src => src.Receivers()).Returns(receiverBlockList);
-            repository.Setup(src => src.Words()).Returns(wordBlockList);
-
+            var repository = new BlockListRepository
+            {
+                Users = () => userBlockList,
+                Receivers = () => receiverBlockList,
+                Words = () => wordBlockList
+            };
             var saveAndNotifyMock = new Mock<Action<User, Receiver, string>>();
 
             MessageService.Send(
                 request,
-                repository.Object,
+                repository,
                 _ => user,
                 _ => receiver,
                 saveAndNotifyMock.Object

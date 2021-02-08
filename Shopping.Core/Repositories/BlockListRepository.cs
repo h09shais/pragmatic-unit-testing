@@ -1,23 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Shopping.Core.Models;
 
 namespace Shopping.Core.Repositories
 {
     public class BlockListRepository
     {
-        public virtual IEnumerable<User> Users()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public virtual IEnumerable<Receiver> Receivers()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public virtual IEnumerable<string> Words()
-        {
-            throw new System.NotImplementedException();
-        }
+        public Func<List<User>> Users { get; set; }
+        public Func<List<Receiver>> Receivers { get; set; }
+        public Func<List<string>> Words { get; set; }
     }
 }
