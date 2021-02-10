@@ -1,7 +1,4 @@
-﻿using System;
-using Shopping.Core.Models;
-using Shopping.Core.Providers;
-using Shopping.Core.Repositories;
+﻿using Shopping.Core.Providers;
 using Shopping.Core.Requests;
 
 namespace Shopping.Core.Services
@@ -9,24 +6,17 @@ namespace Shopping.Core.Services
     public class MessageService
     {
         public static void Send(
-            MessageRequest request, 
-            BlockListRepository blockListRepository, 
-            Func<int, User> findUser, 
-            Func<int, Receiver> findReceiver, 
-            Action<User, Receiver, string> saveAndNotify)
+            MessageRequest request,
+            DataProvider dataProvider
+        )
         {
-            var user = findUser(request.UserId);
-            var userIsNotBlocked = Validate.UserIsNotBlocked(user, blockListRepository.Users());
+            MessagingValidation.MessageIsNotEmpty(dataProvider.MessageIsEmpty(request.Message));
+            MessagingValidation.MessageHasNoCurseWords(dataProvider.MessageHasCurseWords(request.Message));
+            MessagingValidation.UserIsNotBlackListed(dataProvider.UserIsBlackListed(request.UserId));
+            MessagingValidation.ReceiverDoesNotBlockUser(dataProvider.ReceiverBlockUser(request.ReceiverId, request.UserId));
 
-            var receiver = findReceiver(request.ReceiverId);
-            var receiverIsNotBlocked = Validate.ReceiverIsNotBlocked(receiver, blockListRepository.Receivers());
-
-            var messageIsNotBlocked = Validate.MessageIsNotBlocked(request.Message, blockListRepository.Words());
-
-            if (userIsNotBlocked && receiverIsNotBlocked && messageIsNotBlocked)
-            {
-                saveAndNotify(user, receiver, request.Message);
-            }
+            dataProvider.SaveMessage(request.Message);
+            dataProvider.NotifyReceiver(request.UserId, request.ReceiverId, request.Message);
         }
     }
 }

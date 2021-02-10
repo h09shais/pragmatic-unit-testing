@@ -5,7 +5,7 @@ namespace Shopping.Core.Repositories
 {
     public class UserRepository
     {
-        public User FindById(int senderId)
+        public User FindById(int userId)
         {
             throw new NotImplementedException();
         }

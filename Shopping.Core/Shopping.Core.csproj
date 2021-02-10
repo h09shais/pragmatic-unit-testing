@@ -10,6 +10,7 @@
     <Compile Remove="Services\ILoggingService.cs" />
     <Compile Remove="Services\IPaymentService.cs" />
     <Compile Remove="Services\IShoppingService.cs" />
+    <Compile Remove="Services\MessagingValidation.cs" />
   </ItemGroup>
 
 </Project>
