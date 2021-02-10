@@ -2,6 +2,7 @@
 using Moq;
 using NUnit.Framework;
 using Shopping.Core.Models;
+using Shopping.Core.Providers;
 using Shopping.Core.Requests;
 using Shopping.Core.Services;
 
@@ -12,7 +13,7 @@ namespace Shopping.Test
         [Test]
         public void If_message_contains_block_word_Then_sending_messages_should_throw_exception()
         {
-            var dataProvider = new DataProvider
+            var dataProvider = new MessageDataProvider
             {
                 FindUserById = userId => new User { Id = 1 },
                 FindReceiverById = receiverId => new Receiver { Id = 2},
@@ -38,7 +39,7 @@ namespace Shopping.Test
                 Message = "Test!"
             };
 
-            var dataProvider = new DataProvider
+            var dataProvider = new MessageDataProvider
             {
                 FindUserById = userId => new User { Id = 1 },
                 FindReceiverById = receiverId => new Receiver { Id = 2 },

@@ -4,17 +4,17 @@ using Shopping.Core.Models;
 using Shopping.Core.Repositories;
 using Shopping.Core.Services;
 
-namespace Shopping.Core
+namespace Shopping.Core.Providers
 {
-    public class DataProviderFactory
+    public class MessageDataProviderFactory
     {
         private readonly UserRepository _userRepository = new UserRepository();
         private readonly ReceiverRepository _receiverRepository = new ReceiverRepository();
         private readonly BlockListRepository _blockListRepository = new BlockListRepository();
 
-        DataProvider Create()
+        MessageDataProvider Create()
         {
-            return new DataProvider
+            return new MessageDataProvider
             {
                 FindUserById = userId 
                     => _userRepository.FindById(userId),
@@ -36,8 +36,15 @@ namespace Shopping.Core
                     _blockListRepository.Users().Any(user => user.Id == userId) 
                     && _blockListRepository.Receivers().Any(receiver => receiver.Id == receiverId),
 
+                SaveMessage = SaveMessage,
+
                 NotifyReceiver = NotifyReceiver
             };
+        }
+
+        private void SaveMessage(string message)
+        {
+            throw new NotImplementedException();
         }
 
         private void NotifyReceiver(int receiverId, int userId, string message)

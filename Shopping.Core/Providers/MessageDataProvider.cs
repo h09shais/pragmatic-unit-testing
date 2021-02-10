@@ -1,9 +1,9 @@
 ﻿using System;
 using Shopping.Core.Models;
 
-namespace Shopping.Core.Services
+namespace Shopping.Core.Providers
 {
-    public class DataProvider
+    public class MessageDataProvider
     {
         public Func<int, User> FindUserById { get; set; }
 

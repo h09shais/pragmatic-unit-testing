@@ -1,6 +1,6 @@
 ﻿using Shopping.Core.Models;
 
-namespace Shopping.Core.Providers
+namespace Shopping.Core.Validations
 {
     public class MessagingValidation
     {

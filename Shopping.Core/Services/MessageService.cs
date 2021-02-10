@@ -1,5 +1,6 @@
 ﻿using Shopping.Core.Providers;
 using Shopping.Core.Requests;
+using Shopping.Core.Validations;
 
 namespace Shopping.Core.Services
 {
@@ -7,7 +8,7 @@ namespace Shopping.Core.Services
     {
         public static void Send(
             MessageRequest request,
-            DataProvider dataProvider
+            MessageDataProvider dataProvider
         )
         {
             MessagingValidation.MessageIsNotEmpty(dataProvider.MessageIsEmpty(request.Message));
