@@ -8,33 +8,27 @@ namespace Shopping.Core.Providers
 {
     public class MessageDataProviderFactory
     {
-        private readonly UserRepository _userRepository = new UserRepository();
-        private readonly ReceiverRepository _receiverRepository = new ReceiverRepository();
-        private readonly BlockListRepository _blockListRepository = new BlockListRepository();
-
-        MessageDataProvider Create()
+        public static MessageDataProvider Create()
         {
             return new MessageDataProvider
             {
-                FindUserById = userId 
-                    => _userRepository.FindById(userId),
+                FindUserById = UserRepository.FindById,
                 
-                FindReceiverById = receiverId 
-                    => _receiverRepository.FindById(receiverId),
+                FindReceiverById = ReceiverRepository.FindById,
                 
                 MessageIsEmpty = string.IsNullOrEmpty,
                 
                 MessageHasCurseWords = message =>
-                    _blockListRepository.Words().
+                    BlockListRepository.Words().
                         Any(blockedWords => 
                             message.Contains(blockedWords, StringComparison.InvariantCultureIgnoreCase)),
 
                 UserIsBlackListed = userId => 
-                    _blockListRepository.Users().Any(user => user.Id == userId),
+                    BlockListRepository.Users().Any(user => user.Id == userId),
 
                 ReceiverBlockUser = (receiverId, userId) => 
-                    _blockListRepository.Users().Any(user => user.Id == userId) 
-                    && _blockListRepository.Receivers().Any(receiver => receiver.Id == receiverId),
+                    BlockListRepository.Users().Any(user => user.Id == userId) 
+                    && BlockListRepository.Receivers().Any(receiver => receiver.Id == receiverId),
 
                 SaveMessage = SaveMessage,
 
@@ -42,12 +36,12 @@ namespace Shopping.Core.Providers
             };
         }
 
-        private void SaveMessage(string message)
+        private static void SaveMessage(string message)
         {
             throw new NotImplementedException();
         }
 
-        private void NotifyReceiver(int receiverId, int userId, string message)
+        private static void NotifyReceiver(int receiverId, int userId, string message)
         { 
             LoggingService.Log(LogLevel.Info, $"User {userId} send message to Receiver {receiverId}"); 
             //NotificationService.Notify(FindUserById(userId), FindReceiverById(receiverId), message);

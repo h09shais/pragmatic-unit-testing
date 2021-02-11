@@ -9,7 +9,7 @@ namespace Shopping.API.Controllers
     {
         public void Send(MessageRequest request)
         {
-            MessageService.Send(request, new MessageDataProvider());
+            MessageService.Send(request, MessageDataProviderFactory.Create());
         }
     }
 }
